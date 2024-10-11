@@ -71,6 +71,8 @@ private:
         bool verbose;
     };
 
+    static void printByte(const u_char byte); 
+
     struct DNSHeader {
         uint16_t id;     // Identification number
         uint16_t flags;  // Flags (QR, Opcode, etc.)
@@ -82,6 +84,11 @@ private:
 
     static DNSHeader* parseDNSHeader(const u_char* packet);
 
+    static void parseResourceRecords(const u_char** dnsPayload, uint16_t rrcount, const u_char* message);
+
+    // static void parseCompressedName(const u_char** ptr, const u_char* dnsPayloadStart, string& name);
+
+
     static string toUpper(string str);
 
     /**
@@ -91,6 +98,9 @@ private:
      * @param packet Packet
     */
     static void packetCallback(u_char* args, const struct pcap_pkthdr* header, const u_char* packet);
+
+    static void parseDomainName(const u_char* &dnsPointer, const u_char* messageStart, std::string &domainName);
+
 
     string device_;
     pcap_t* handle_;
