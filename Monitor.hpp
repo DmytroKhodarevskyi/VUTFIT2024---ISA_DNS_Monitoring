@@ -37,6 +37,8 @@ public:
     */
     Monitor(const string& device);
 
+    // Monitor(const string& device);
+
     /**
      * @brief Construct a new Sniffer object (only for listing interfaces)
     */
@@ -57,21 +59,33 @@ public:
     */
     void list_active_interfaces();
     
-    ifstream pcap_file_stream;
+    // ifstream pcap_file_stream;
     ifstream domains_file_stream;
     ifstream translation_file_stream;
+
+    string domains_file_name;
+    string translation_file_name;
 
     bool verbose;
 
 private:
 
     struct callback_args {
-        ifstream* domains_file_stream;
-        ifstream* translation_file_stream;
+        // ifstream* domains_file_stream;
+        // ifstream* translation_file_stream;
+
+        string domains_file_name;
+        string translation_file_name;
         bool verbose;
     };
 
+    static string resolveDomainToIP(const string& domain);
+
     static void printByte(const u_char byte); 
+
+    // static void addEntry(ifstream* file_stream, string entry);
+    static void addEntry(const string& fileName, const string& entry);
+
 
     struct DNSHeader {
         uint16_t id;     // Identification number
@@ -84,7 +98,8 @@ private:
 
     static DNSHeader* parseDNSHeader(const u_char* packet);
 
-    static void parseResourceRecords(const u_char** dnsPayload, uint16_t rrcount, const u_char* message);
+    static void parseResourceRecords(const u_char** dnsPayload, uint16_t rrcount, const u_char* message, string domains_file_name, 
+    string translation_file_name, bool verbose);
 
     // static void parseCompressedName(const u_char** ptr, const u_char* dnsPayloadStart, string& name);
 

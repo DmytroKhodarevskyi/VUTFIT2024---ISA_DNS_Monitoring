@@ -55,6 +55,11 @@ void Parse::parseArguments() {
         exit(1);
     }
 
+    if (interface != "" && pcap_file != "") {
+        fprintf(stderr, "Usage: %s [-i interface] [-p pcap-file] [-d domains-file] [-t translations-file] [-v]\n", argv[0]);
+        exit(1);
+    }
+
     // if (!domains_file.empty()) {
     //     domains_file_stream.open(domains_file);
     //     if (!domains_file_stream.is_open()) {
@@ -78,4 +83,12 @@ void Parse::parseArguments() {
     //         exit(1);
     //     }
     // }
+}
+
+string Parse::getSource() {
+    if (interface != "") {
+        return interface;
+    } else {
+        return pcap_file;
+    }
 }

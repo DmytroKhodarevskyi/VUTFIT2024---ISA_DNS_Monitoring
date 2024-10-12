@@ -18,6 +18,9 @@ class Parse {
         void parseArguments();
 
         bool isVerbose() { return verbose; }
+
+        string getSource();
+
         string getInterface() { return interface; }
         string getPcapFile() { return pcap_file; }
         string getDomainsFile() { return domains_file; }
