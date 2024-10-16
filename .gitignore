@@ -36,3 +36,4 @@ dns-monitor
 
 *.pcap
 *.txt
+*.py

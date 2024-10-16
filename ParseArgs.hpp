@@ -5,39 +5,36 @@
 // #include <fstream>
 #include <getopt.h>
 
-
 using namespace std;
 
 extern struct option long_options[];
 
-class Parse {
-    public:
-        // adawdwadaw
-        Parse(int argc, char *argv[]);
+class Parse
+{
+public:
+    // adawdwadaw
+    Parse(int argc, char *argv[]);
 
-        void parseArguments();
+    void parseArguments();
 
-        bool isVerbose() { return verbose; }
+    bool isVerbose() { return verbose; }
 
-        string getSource();
+    string getSource();
 
-        string getInterface() { return interface; }
-        string getPcapFile() { return pcap_file; }
-        string getDomainsFile() { return domains_file; }
-        string getTranslationFile() { return translation_file; }
+    string getInterface() { return interface; }
+    string getPcapFile() { return pcap_file; }
+    string getDomainsFile() { return domains_file; }
+    string getTranslationFile() { return translation_file; }
 
-    private:
-        int argc;
-        char **argv;
-        bool verbose;
-        string interface;
-        string pcap_file;
-        string domains_file;
-        string translation_file;
+private:
+    int argc;
+    char **argv;
+    bool verbose;
+    string interface;
+    string pcap_file;
+    string domains_file;
+    string translation_file;
 
-        // ifstream pcap_file_stream;
-        // ifstream domains_file_stream;
-        // ifstream translation_file_stream;
 };
 
 #endif // PARSE_H

@@ -1,5 +1,5 @@
-#ifndef SNIFFER_H
-#define SNIFFER_H
+#ifndef MONITOR_H
+#define MONITOR_H
 
 #include <iostream>
 
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <typeinfo>
 #include <cstring>
-#include <bitset> 
+#include <bitset>
 #include <math.h>
 #include <time.h>
 #include <netinet/ether.h>
@@ -26,39 +26,40 @@
 
 #include <iomanip>
 #include <ctime>
-#include <resolv.h>  // For DNS headers
+#include <resolv.h> // For DNS headers
 
 using namespace std;
 
-class Monitor {
+class Monitor
+{
 public:
     /**
      * @brief Construct a new Sniffer object with device
-    */
-    Monitor(const string& device);
+     */
+    Monitor(const string &device);
 
     // Monitor(const string& device);
 
     /**
      * @brief Construct a new Sniffer object (only for listing interfaces)
-    */
+     */
     Monitor();
 
     /**
      * @brief Destroy the Sniffer object
-    */
+     */
     ~Monitor();
 
     /**
      * @brief Capture packets
-    */
+     */
     void capture();
 
     /**
      * @brief List active interfaces
-    */
+     */
     void list_active_interfaces();
-    
+
     // ifstream pcap_file_stream;
     ifstream domains_file_stream;
     ifstream translation_file_stream;
@@ -69,40 +70,47 @@ public:
     bool verbose;
 
 private:
-
-    struct callback_args {
-        // ifstream* domains_file_stream;
-        // ifstream* translation_file_stream;
-
+    struct callback_args
+    {
         string domains_file_name;
         string translation_file_name;
         bool verbose;
     };
 
-    static string resolveDomainToIP(const string& domain);
+    static string resolveDomainToIP(const string &domain);
 
-    static void printByte(const u_char byte); 
+    static void printByte(const u_char byte);
 
     // static void addEntry(ifstream* file_stream, string entry);
-    static void addEntry(const string& fileName, const string& entry);
+    static void addEntry(const string &fileName, const string &entry);
 
-
-    struct DNSHeader {
-        uint16_t id;     // Identification number
-        uint16_t flags;  // Flags (QR, Opcode, etc.)
+    struct DNSHeader
+    {
+        uint16_t id;      // Identification number
+        uint16_t flags;   // Flags (QR, Opcode, etc.)
         uint16_t qdcount; // Number of entries in Question section
         uint16_t ancount; // Number of entries in Answer section
         uint16_t nscount; // Number of entries in Authority section
         uint16_t arcount; // Number of entries in Additional section
     };
 
-    static DNSHeader* parseDNSHeader(const u_char* packet);
+    enum Types {
+        A = 1,
+        AAAA = 28,
+        NS = 2,
+        MX = 15,
+        EDNS = 41,
+        SOA = 6,
+        CNAME = 5,
+        SRV = 33
+    };
 
-    static void parseResourceRecords(const u_char** dnsPayload, uint16_t rrcount, const u_char* message, string domains_file_name, 
-    string translation_file_name, bool verbose);
+    static DNSHeader *parseDNSHeader(const u_char *packet);
+
+    static void parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, const u_char *message, string domains_file_name,
+                                     string translation_file_name, bool verbose);
 
     // static void parseCompressedName(const u_char** ptr, const u_char* dnsPayloadStart, string& name);
-
 
     static string toUpper(string str);
 
@@ -111,16 +119,15 @@ private:
      * @param args Arguments
      * @param header Packet header
      * @param packet Packet
-    */
-    static void packetCallback(u_char* args, const struct pcap_pkthdr* header, const u_char* packet);
+     */
+    static void packetCallback(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 
-    static void parseDomainName(const u_char* &dnsPointer, const u_char* messageStart, std::string &domainName);
-
+    // static void parseDomainName(const u_char *&dnsPointer, const u_char *messageStart, string &domainName, string domains_file_name);
+    static void parseDomainName(const u_char **dnsPointer, const u_char *messageStart, string &domainName, string domains_file_name);
 
     string device_;
-    pcap_t* handle_;
+    pcap_t *handle_;
     bool list_interfaces_;
-
 };
 
-#endif // SNIFFER_H
+#endif // MONITOR_H
