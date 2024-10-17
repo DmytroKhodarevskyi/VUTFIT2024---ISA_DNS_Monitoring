@@ -77,8 +77,6 @@ private:
         bool verbose;
     };
 
-    static string resolveDomainToIP(const string &domain);
-
     static void printByte(const u_char byte);
 
     // static void addEntry(ifstream* file_stream, string entry);
@@ -94,7 +92,8 @@ private:
         uint16_t arcount; // Number of entries in Additional section
     };
 
-    enum Types {
+    enum Types
+    {
         A = 1,
         AAAA = 28,
         NS = 2,
@@ -105,7 +104,7 @@ private:
         SRV = 33
     };
 
-    static DNSHeader *parseDNSHeader(const u_char *packet);
+    static DNSHeader *parseDNSHeader(const u_char *packet, bool isIPv6);
 
     static void parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, const u_char *message, string domains_file_name,
                                      string translation_file_name, bool verbose);

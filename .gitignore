@@ -37,3 +37,4 @@ dns-monitor
 *.pcap
 *.txt
 *.py
+vgcore.*

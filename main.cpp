@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     monitor.verbose = parse.isVerbose();
 
     // monitor.list_active_interfaces();
+    // cerr << "CAPTURING" << endl;
     monitor.capture();
 
     return 0;
