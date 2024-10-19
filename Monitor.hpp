@@ -34,19 +34,17 @@ class Monitor
 {
 public:
     /**
-     * @brief Construct a new Sniffer object with device
+     * @brief Construct a new Monitor object with device
      */
     Monitor(const string &device);
 
-    // Monitor(const string& device);
-
     /**
-     * @brief Construct a new Sniffer object (only for listing interfaces)
+     * @brief Construct a new Monitor object (only for listing interfaces)
      */
     Monitor();
 
     /**
-     * @brief Destroy the Sniffer object
+     * @brief Destroy the Monitor object
      */
     ~Monitor();
 
@@ -60,9 +58,8 @@ public:
      */
     void list_active_interfaces();
 
-    // ifstream pcap_file_stream;
-    ifstream domains_file_stream;
-    ifstream translation_file_stream;
+    // ifstream domains_file_stream;
+    // ifstream translation_file_stream;
 
     string domains_file_name;
     string translation_file_name;
@@ -70,6 +67,10 @@ public:
     bool verbose;
 
 private:
+
+    /**
+     * @brief Arguments struct to pass to packet callback
+     */
     struct callback_args
     {
         string domains_file_name;
@@ -77,11 +78,19 @@ private:
         bool verbose;
     };
 
+    /**
+     * @brief Prints byte in hex, string and dec format (used for debug)
+     */
     static void printByte(const u_char byte);
 
-    // static void addEntry(ifstream* file_stream, string entry);
+    /**
+     * @brief Adds line to specified file (unique only)
+     */
     static void addEntry(const string &fileName, const string &entry);
 
+    /**
+     * @brief Header for DNS information
+     */
     struct DNSHeader
     {
         uint16_t id;      // Identification number
@@ -92,6 +101,9 @@ private:
         uint16_t arcount; // Number of entries in Additional section
     };
 
+    /**
+     * @brief DNS Query types
+     */
     enum Types
     {
         A = 1,
@@ -104,13 +116,22 @@ private:
         SRV = 33
     };
 
+    /**
+     * @brief Parse DNS Header
+     * @return DNSHeader struct with information
+     */
     static DNSHeader *parseDNSHeader(const u_char *packet, bool isIPv6);
 
+    /**
+     * @brief Parses DNS Answers, Authority and Additional sections
+     */
     static void parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, const u_char *message, string domains_file_name,
                                      string translation_file_name, bool verbose);
 
-    // static void parseCompressedName(const u_char** ptr, const u_char* dnsPayloadStart, string& name);
-
+    /**
+     * @brief Formats specified string to upper
+     * @return Formatted string
+     */
     static string toUpper(string str);
 
     /**
@@ -121,7 +142,9 @@ private:
      */
     static void packetCallback(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 
-    // static void parseDomainName(const u_char *&dnsPointer, const u_char *messageStart, string &domainName, string domains_file_name);
+    /**
+     * @brief Parses Domain name, handles compression and pointer arithmetic
+     */
     static void parseDomainName(const u_char **dnsPointer, const u_char *messageStart, string &domainName, string domains_file_name);
 
     string device_;

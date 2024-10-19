@@ -101,8 +101,6 @@ void Monitor::list_active_interfaces()
 
 Monitor::DNSHeader *Monitor::parseDNSHeader(const u_char *packet, bool isIPv6)
 {
-    // return (DNSHeader *)(packet + sizeof(ether_header) + sizeof(iphdr) + sizeof(udphdr));
-
     size_t ipHeaderSize = isIPv6 ? 40 : ((struct ip *)(packet + sizeof(ether_header)))->ip_hl * 4;
     const u_char *dnsHeader_p = packet + sizeof(ether_header) + ipHeaderSize + sizeof(udphdr);
     return (DNSHeader *)dnsHeader_p;
@@ -128,7 +126,6 @@ void Monitor::capture()
 }
 
 void Monitor::parseDomainName(const u_char **dnsPointer, const u_char *messageStart, std::string &domainName, string domains_file_name)
-// void Monitor::parseDomainName(const u_char *&dnsPointer, const u_char *messageStart, std::string &domainName, string domains_file_name)
 {
     string name;
     const u_char *name_pointer = *dnsPointer;
@@ -173,74 +170,13 @@ void Monitor::parseDomainName(const u_char **dnsPointer, const u_char *messageSt
         }
     }
 
-    // Remove the trailing dot, if any
-    // if (!name.empty() && name.back() == '.')
-    // {
-        // name.pop_back();
-    // }
-
-    // return name;
     domainName.append(name);
 
     if (domains_file_name != "")
     {
-        // Remove the trailing dot
         Monitor::addEntry(domains_file_name, domainName.substr(0, domainName.size()-1));
-        // qname.substr(0, qname.size() - 1)
     }
 
-    return;
-
-    // -------------------------------------------------
-
-    int jump = 0;
-    const u_char *start = *dnsPointer;
-    // while (*dnsPointer != 0)
-    bool compression = false;
-    while (**dnsPointer != 0)
-    {
-        // i++;
-
-        // if ((*dnsPointer & 0xC0) == 0xC0)
-        if ((**dnsPointer & 0xC0) == 0xC0)
-        { // Check for compression
-            compression = true;
-            // uint16_t offset = ntohs(*reinterpret_cast<const uint16_t *>(dnsPointer)) & 0x3FFF;
-            uint16_t offset = ntohs(*reinterpret_cast<const uint16_t *>(*dnsPointer)) & 0x3FFF;
-            // dnsPointer = messageStart + offset; // Follow the pointer
-            *dnsPointer = messageStart + offset; // Follow the pointer
-
-            jump += 2;
-        }
-        else
-        {
-            // int labelLength = *dnsPointer;
-            int labelLength = **dnsPointer;
-            // dnsPointer++;
-            (*dnsPointer)++;
-            if (!compression)
-                jump++;
-            // domainName.append(reinterpret_cast<const char *>(dnsPointer), labelLength);
-            domainName.append(reinterpret_cast<const char *>(*dnsPointer), labelLength);
-            domainName.append(".");
-            // dnsPointer += labelLength;
-            *dnsPointer += labelLength;
-            if (!compression)
-                jump += labelLength;
-        }
-    }
-
-    *dnsPointer = start + jump;
-
-    if (!domainName.empty() && domainName.back() == '.')
-    {
-        domainName.pop_back(); // Remove trailing dot
-        if (domains_file_name != "")
-        {
-            // Remove the trailing dot
-            Monitor::addEntry(domains_file_name, domainName);
-        }
-    }
 }
 
 void Monitor::parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, const u_char *message,
@@ -252,87 +188,6 @@ void Monitor::parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, 
 
         string name;
         Monitor::parseDomainName(dnsPayload, message, name, domains_file_name); // Function to resolve compressed names
-
-        // const u_char *name_pointer = *dnsPayload;
-
-        // cerr << "-------------" << endl ;
-        // cerr << "BEGIN" << endl ;
-        // printByte(**dnsPayload);
-        // // printByte(*(*dnsPayload+1));
-        // cerr << "-------------" << endl ;
-
-        // // cerr << "-------------------" << endl;
-        // // printByte(*name_pointer);
-        // // printByte(*(name_pointer+1));
-        // // printByte(*(name_pointer+2));
-        // // cerr << "-------------------" << endl;
-
-        // unsigned char FirstTwo = **dnsPayload & 0xC0;
-        // int jump = 0;
-
-        // if (FirstTwo == 0xC0)
-        // {
-        //     // Extract the offset
-        //     uint16_t offset = ntohs(*reinterpret_cast<const uint16_t *>(*dnsPayload)) & 0x3FFF;
-        //     // Get the pointer to the compressed name
-        //     name_pointer = message + offset;
-        //     // Move the pointer forward by 2 bytes
-        //     *dnsPayload += 2;
-        // }
-        // else
-        // {
-        //     // Move the pointer forward by 1 byte
-        //     // *dnsPayload += 1;
-        //     jump = **dnsPayload;
-        //     *dnsPayload += jump;
-
-        // }
-
-        // cerr << "-------------" << endl ;
-        // cerr << "jump: " << jump << endl ;
-        // cerr << "OFFSET" << endl ;
-        // printByte(**dnsPayload);
-        // // printByte(*(*dnsPayload+1));
-        // cerr << "-------------" << endl ;
-
-        // string name;
-
-        // while (*name_pointer != 0)
-        // {
-        //     int labelLength = *name_pointer;
-
-        //     name_pointer++;
-
-        //     // cerr << "LABEL LENGTH: " << labelLength << endl;
-        //     name.append(reinterpret_cast<const char *>(name_pointer), labelLength);
-        //     name.append(".");
-
-        //     name_pointer += labelLength;
-
-        //     // Nested compression
-        //     if (*name_pointer == 0xC0)
-        //     {
-        //         uint16_t offset = ntohs(*reinterpret_cast<const uint16_t *>(name_pointer)) & 0x3FFF;
-        //         name_pointer = message + offset;
-
-        //         *dnsPayload += 2;
-        //     }
-        // }
-
-        // cerr << "NAME: " << name << endl;
-        // cerr << "---------------------" << endl;
-        // printByte(**dnsPayload);
-        // // printByte(*(*dnsPayload+1));
-        // // printByte(*(*dnsPayload+2));
-        // cerr << "---------------------" << endl;
-
-        // name_pointer++; // Skip the null terminator (0x00)
-
-        // if (domains_file_name != "")
-        // {
-        //     // Remove the trailing dot
-        //     Monitor::addEntry(domains_file_name, name.substr(0, name.size() - 1));
-        // }
 
         // Parse TYPE (2 bytes)
         uint16_t type;
@@ -405,12 +260,6 @@ void Monitor::parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, 
             string mxDomain;
             const u_char *mx_pointer = *dnsPayload;
 
-            // cerr << "-------------------" << endl;
-            // printByte(*mx_pointer);
-            // printByte(*(mx_pointer+1));
-            // printByte(*(mx_pointer+2));
-            // cerr << "-------------------" << endl;
-
             Monitor::parseDomainName(&mx_pointer, message, mxDomain, domains_file_name); // Resolve the MX domain name
             if (verbose)
                 cout << name << " " << ttl << " " << Class << " MX " << preference << " " << mxDomain << endl;
@@ -427,13 +276,6 @@ void Monitor::parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, 
             string mname, rname;
             const u_char *soa_pointer = *dnsPayload;
             Monitor::parseDomainName(&soa_pointer, message, mname, domains_file_name); // Resolve the MNAME domain name
-            // soa_pointer += 1;
-
-            // cerr << "first-------------------" << endl;
-            // printByte(*soa_pointer);
-            // printByte(*(soa_pointer+1));
-            // printByte(*(soa_pointer+2));
-            // cerr << "-------------------" << endl;
 
             Monitor::parseDomainName(&soa_pointer, message, rname, domains_file_name); // Resolve the RNAME domain name
 
@@ -503,11 +345,6 @@ void Monitor::parseResourceRecords(const u_char **dnsPayload, uint16_t rrcount, 
                      << target << " "
                      << endl;
 
-            // cerr << "-------------------" << endl;
-            // printByte(**dnsPayload);
-            // printByte(*(*dnsPayload + 1));
-            // printByte(*(*dnsPayload + 2));
-            // cerr << "-------------------" << endl;
         }
         else
         {
@@ -594,15 +431,6 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
         ipPacket = packet + sizeof(struct ether_header) + ipHeaderSize;
     }
 
-    // Parse the IP header
-    // struct ip *ipHeader = (struct ip *)(packet + sizeof(ether_header));
-    // char srcIp[INET_ADDRSTRLEN], dstIp[INET_ADDRSTRLEN];
-    // inet_ntop(AF_INET, &(ipHeader->ip_src), srcIp, INET_ADDRSTRLEN);
-    // inet_ntop(AF_INET, &(ipHeader->ip_dst), dstIp, INET_ADDRSTRLEN);
-
-    // Parse UDP header (assuming UDP transport for DNS)
-    // struct udphdr *udpHeader = (struct udphdr *)(packet + sizeof(ether_header) + sizeof(iphdr));
-
     const struct udphdr *udpHeader = (struct udphdr *)ipPacket;
 
     bool isIPv6 = false;
@@ -678,8 +506,6 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
         dnsMessage = dnsHeader_p; // Point to the same location for now
     }
 
-    // struct udphdr *udpHeader = (struct udphdr *)(packet + sizeof(ether_header) + sizeof(iphdr));
-
     const u_char *dnsPayload = dnsHeader_p + sizeof(DNSHeader);
 
     if (data->verbose)
@@ -688,8 +514,6 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
 
     for (int i = 0; i < dnsHeader->qdcount; i++)
     {
-
-        // cerr << "packet" << endl;
 
         // Parse QNAME
         string qname;
@@ -717,8 +541,6 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
         memcpy(&qclass, dnsPayload, sizeof(uint16_t));
         qclass = ntohs(qclass); // Convert from network to host byte order
         dnsPayload += 2;
-
-        // Print the question in the format "example.com. IN A"
 
         if (data->verbose)
         {
