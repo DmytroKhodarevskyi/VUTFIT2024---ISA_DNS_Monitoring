@@ -1,3 +1,10 @@
+/**
+ * @file: main.cpp
+ * @author: Dmytro Khodarevskyi
+ * @login: xkhoda01
+ * @brief: main function
+ */
+
 #include "ParseArgs.hpp"
 #include "Monitor.hpp"
 

@@ -1,3 +1,10 @@
+/**
+ * @file: ParseArgs.hpp
+ * @author: Dmytro Khodarevskyi
+ * @login: xkhoda01
+ * @brief: ParseArgs header
+ */
+
 #ifndef PARSE_H
 #define PARSE_H
 

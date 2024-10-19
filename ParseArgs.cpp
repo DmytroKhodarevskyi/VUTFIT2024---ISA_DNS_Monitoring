@@ -1,3 +1,10 @@
+/**
+ * @file: ParseArgs.cpp
+ * @author: Dmytro Khodarevskyi
+ * @login: xkhoda01
+ * @brief: Parse command line arguments and capture necessary data, exit if error
+ */
+
 #include "ParseArgs.hpp"
 
 using namespace std;

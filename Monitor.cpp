@@ -1,3 +1,10 @@
+/**
+ * @file: Monitor.cpp
+ * @author: Dmytro Khodarevskyi
+ * @login: xkhoda01
+ * @brief: DNS Monitor body, toolset for packet capture and DNS parsing
+ */
+
 #include "Monitor.hpp"
 
 Monitor::Monitor(const string &device) : domains_file_name(""), translation_file_name(""), device_(device)

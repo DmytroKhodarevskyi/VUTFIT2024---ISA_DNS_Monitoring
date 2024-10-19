@@ -1,3 +1,10 @@
+/**
+ * @file: Monitor.hpp
+ * @author: Dmytro Khodarevskyi
+ * @login: xkhoda01
+ * @brief: DNS Monitor header
+ */
+
 #ifndef MONITOR_H
 #define MONITOR_H
 

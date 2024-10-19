@@ -1,3 +1,8 @@
+# @file: makefile
+# @author: Dmytro Khodarevskyi
+# @login: xkhoda01
+# @brief: makefile for compiling code
+
 # Compiler settings
 CXX = g++
 CXXFLAGS = -g -Wall -Wextra -std=c++20 -fno-omit-frame-pointer
