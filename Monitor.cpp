@@ -504,7 +504,8 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
 
     if (ethType == ETHERTYPE_IP)
     { // IPv4
-        dnsHeader_p = packet + sizeof(ether_header) + sizeof(iphdr) + sizeof(udphdr);
+        // dnsHeader_p = packet + sizeof(ether_header) + sizeof(iphdr) + sizeof(udphdr);
+        dnsHeader_p = packet + sizeof(ether_header) + sizeof(struct ip) + sizeof(udphdr);
         dnsMessage = dnsHeader_p; // Point to the same location for now
     }
     else if (ethType == ETHERTYPE_IPV6)
@@ -582,6 +583,9 @@ void Monitor::packetCallback(u_char *args, const struct pcap_pkthdr *header, con
                 break;
             case CNAME:
                 cout << " CNAME";
+                break;
+            case SRV:
+                cout << " SRV";
                 break;
             default:
                 cout << " " << qtype << " (unhandled type)"; // Print raw QTYPE if not recognized

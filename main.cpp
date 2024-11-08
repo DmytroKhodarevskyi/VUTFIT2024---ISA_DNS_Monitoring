@@ -15,6 +15,13 @@ int main(int argc, char *argv[])
     Parse parse = Parse(argc, argv);
     parse.parseArguments();
 
+    if (parse.isListMonitors())
+    {
+        Monitor monitor;
+        monitor.list_active_interfaces();
+        return 0;
+    }
+
     Monitor monitor(parse.getSource());
 
     monitor.domains_file_name = parse.getDomainsFile();

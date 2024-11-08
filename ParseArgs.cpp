@@ -15,11 +15,13 @@ struct option long_options[] = {
     {"translations-file", required_argument, 0, 't'},
     {"domains-file", required_argument, 0, 'd'},
     {"verbose", no_argument, 0, 'v'},
+    {"verbose", no_argument, 0, 'm'},
     {0, 0, 0, 0}};
 
 Parse::Parse(int argc, char *argv[]) : argc(argc),
                                        argv(argv),
                                        verbose(false),
+                                       list_monitors(false),
                                        interface(""),
                                        pcap_file(""),
                                        domains_file(""),
@@ -32,7 +34,7 @@ void Parse::parseArguments()
     int opt;
     int option_index = 0;
     opterr = 0;
-    while ((opt = getopt_long(argc, argv, "i:p:vd:t:", long_options, &option_index)) != -1)
+    while ((opt = getopt_long(argc, argv, "i:p:vmd:t:", long_options, &option_index)) != -1)
     {
         switch (opt)
         {
@@ -53,9 +55,17 @@ void Parse::parseArguments()
         case 'v':
             verbose = true;
             break;
+        case 'm':
+            list_monitors = true;
+            break;
         default:
             fprintf(stderr, "Usage: %s [-i interface] [-p pcap-file] [-d domains-file] [-t translations-file] [-v]\n", argv[0]);
         }
+    }
+
+    if (list_monitors)
+    {
+        return;
     }
 
     if (interface == "" && pcap_file == "")

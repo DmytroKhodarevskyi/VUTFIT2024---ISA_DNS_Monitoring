@@ -22,7 +22,7 @@
 #include <bitset>
 #include <math.h>
 #include <time.h>
-#include <netinet/ether.h>
+#include <netinet/if_ether.h>
 #include <netinet/ip.h>
 #include <netinet/ip6.h>
 #include <netinet/ip_icmp.h>

@@ -113,8 +113,9 @@ Makefile is present, so for compiling project you can use:
 - _-i &lt;interface&gt;_ - the name of the interface on which the program will listen, or
 - _-p &lt;pcapfile&gt;_ - the name of the PCAP file that the program will process;
 - _-v_ - "verbose" mode: complete listing of DNS message details;
-- _-d &lt;domainsfile&gt;_ - name of the domain name file;
-- _-t &lt;translationsfile&gt;_ - name of the file with the translation of domain names to IP.
+- _-m_ - list active interfaces;
+- _-d &lt;domainsfile&gt;_ - name of the domain name file (if file does not exist, it will be created);
+- _-t &lt;translationsfile&gt;_ - name of the file with the translation of domain names to IP (if file does not exist, it will be created).
 
 ### List of files
 

@@ -38,3 +38,8 @@ dns-monitor
 *.txt
 *.py
 vgcore.*
+
+
+/submission
+/docs
+*.tex

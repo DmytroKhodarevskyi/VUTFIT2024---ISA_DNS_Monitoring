@@ -30,6 +30,8 @@ public:
 
     bool isVerbose() { return verbose; }
 
+    bool isListMonitors() { return list_monitors; }
+
     string getSource();
     string getInterface() { return interface; }
     string getPcapFile() { return pcap_file; }
@@ -40,6 +42,7 @@ private:
     int argc;
     char **argv;
     bool verbose;
+    bool list_monitors;
     string interface;
     string pcap_file;
     string domains_file;
